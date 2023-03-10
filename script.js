@@ -23,6 +23,8 @@ const game = {
     gameInstructions: `Rock, Paper, Scissors. To start game, type game.run()`,
     playerMove: '',
     computerMove: '',
+    roundWinner: '',
+    matchWinner: '',
     playerScore: '',
     computerScore: '',
     roundNumber: '',
@@ -36,6 +38,7 @@ const game = {
     run: function() {
         this.checkPlayerInput();
         this.computerInput();
+        this.compareMoves();
     },
 
 
@@ -50,7 +53,7 @@ const game = {
         let pInputLower = pInput.toLowerCase();
         if(pInputLower === 'r' || pInputLower === 'p' || pInputLower === 's') {
             this.playerMove = pInputLower;
-            console.log('obj yes', this.playerMove);
+            console.log('Player Move: ', this.playerMove);
         } else {
             alert(`Input not valid. Please pass one of the following letters into the prompt to select a move: 'r' | 'p' | 's' (rock | paper | scissors)`);
             this.checkPlayerInput();
@@ -62,9 +65,34 @@ const game = {
     // This move is stored in variable for Computer 
     computerInput: function() {
         let randomMoveNum = Math.floor(Math.random() * 3) + 1;
-        console.log('comp rand num', randomMoveNum);
+        randomMoveNum === 1 ? this.computerMove = 'r' :
+        randomMoveNum === 2 ? this.computerMove = 'p' :
+        randomMoveNum === 3 ? this.computerMove = 's' : console.log(`error. this shouldn't happen.`);
+        console.log('Computer move: ', this.computerMove);
     },
-  
+
+
+    //  3. Compare Player and Computer inputs to determine outcome
+    //  //  Possible outcomes are Computer wins, Player wins, Draw
+    // Next function accepts the Player and Computer move variables
+    // If Player wins, return 'player' string, or 'computer' if Computer wins.
+    compareMoves: function() {
+        let pMove = this.playerMove;
+        let cMove = this.computerMove;
+        // Draw
+        if (pMove === cMove) {
+            this.roundWinner = 'draw';
+        }
+        // Player wins 
+        else if (pMove === 'r' && cMove === 's' || pMove === 'p' && cMove === 'r' || pMove === 's' && cMove === 'p') {
+            this.roundWinner = 'player';
+        } 
+        // Computer wins
+        else {
+            this.roundWinner = 'computer';
+        }
+        console.log('compareMoves() roundWinner: ', this.roundWinner);
+    }
 }
 
 //  -1. Display instructions
@@ -72,10 +100,6 @@ game.conLogInstructions();
     
 
 
-//  3. Compare Player and Computer inputs to determine outcome
-//  //  Possible outcomes are Computer wins, Player wins, Draw
-    // Next function accepts the Player and Computer move variables
-    // If Player wins, return 'player' string, or 'computer' if Computer wins.
 
 //  4. If there's a winner, update the score and update the round
     // 'Winner' function is ran with the returned string argument
