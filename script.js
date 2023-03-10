@@ -17,38 +17,59 @@
 
 //  // Steps
 
-//  0. console.log the user instructions to start playing
-    console.log(`Rock, Paper, Scissors. Please pass one of the following letters including quotes, into the game.checkPlayerInput() function to select a move: 'r' | 'p' | 's'`);
 
 //  0.5 Create object to hold all functions
+const game = {
+    gameInstructions: `Rock, Paper, Scissors. To start game, type game.run()`,
+    playerMove: '',
+    computerMove: '',
+    playerScore: '',
+    computerScore: '',
+    roundNumber: '',
+
+    //  0. console.log the user instructions to start playing
+    conLogInstructions: function() {
+        console.log(`${this.gameInstructions}`);
+    },
+
+    // 0.75 Controller method that executes all necessary functions;
+    run: function() {
+        this.checkPlayerInput();
+        this.computerInput();
+    },
 
 
-
-//  1. Ready to accept an input from Player
+    //  1. Ready to accept an input from Player
     // Accept 'Rock', 'Paper', or 'Scissors' into a function call. This function remains separate from the controller function. It's in the master input function. 
     // Arg passed into function
     // Para set to a variable for the Player
     // Run function that checks to see if it's an acceptable input
     // If not acceptable, alert user to enter a valid input.
-
-    const game = {
-        playerMove: '',
-        computerMove: '',
-        playerScore: '',
-        computerScore: '',
-        roundNumber: '',
-        checkPlayerInput: function(pInput) {
-            let pInputLower = pInput.toLowerCase();
-            pInputLower === 'r' || pInputLower === 'p' || pInputLower === 's' ? this.playerMove = pInputLower : alert(`Input not valid. Please pass one of the following letters including quotes, into the game.checkPlayerInput() function to select a move: 'r' | 'p' | 's' (rock | paper | scissors)`);
+    checkPlayerInput: function() {
+        let pInput = prompt(`Please pass one of the following letters into the prompt to select a move: 'r' | 'p' | 's'`)
+        let pInputLower = pInput.toLowerCase();
+        if(pInputLower === 'r' || pInputLower === 'p' || pInputLower === 's') {
+            this.playerMove = pInputLower;
             console.log('obj yes', this.playerMove);
+        } else {
+            alert(`Input not valid. Please pass one of the following letters into the prompt to select a move: 'r' | 'p' | 's' (rock | paper | scissors)`);
+            this.checkPlayerInput();
         }
-    }
-  
-    
-//  2. Randomly select input for Computer
+    },
+
+    //  2. Randomly select input for Computer
     // Next function is ran, randomly selecting a move for the computer
     // This move is stored in variable for Computer 
+    computerInput: function() {
+        let randomMoveNum = Math.floor(Math.random() * 3) + 1;
+        console.log('comp rand num', randomMoveNum);
+    },
+  
+}
 
+//  -1. Display instructions
+game.conLogInstructions();
+    
 
 
 //  3. Compare Player and Computer inputs to determine outcome
