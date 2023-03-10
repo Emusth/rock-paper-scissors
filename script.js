@@ -25,9 +25,9 @@ const game = {
     computerMove: '',
     roundWinner: '',
     matchWinner: '',
-    playerScore: '',
-    computerScore: '',
-    roundNumber: '',
+    playerScore: 0,
+    computerScore: 0,
+    roundNumber: 0,
 
     //  0. console.log the user instructions to start playing
     conLogInstructions: function() {
@@ -36,9 +36,19 @@ const game = {
 
     // 0.75 Controller method that executes all necessary functions;
     run: function() {
+        // Play a round of the game
         this.checkPlayerInput();
         this.computerInput();
         this.compareMoves();
+
+        // If there's a tie, re-do the round;
+        if(!this.roundWinner) {
+            this.checkPlayerInput();
+            this.computerInput();
+            this.compareMoves();
+        }
+        // If there's a winner, process outcome
+        this.processRoundResult();
     },
 
 
@@ -81,7 +91,7 @@ const game = {
         let cMove = this.computerMove;
         // Draw
         if (pMove === cMove) {
-            this.roundWinner = 'draw';
+            this.roundWinner = false;
         }
         // Player wins 
         else if (pMove === 'r' && cMove === 's' || pMove === 'p' && cMove === 'r' || pMove === 's' && cMove === 'p') {
@@ -92,6 +102,18 @@ const game = {
             this.roundWinner = 'computer';
         }
         console.log('compareMoves() roundWinner: ', this.roundWinner);
+    },
+
+    //  4. If there's a winner, update the score and update the round
+    // 'Winner' function is ran with the returned string argument
+    // Update the score for the winner. Update the round number. All these values are global in scope?
+    //  --> If there's a draw, alert the player and return to step 1.
+    // If Step 3. function returns draw, run 'draw' function which alerts the draw, and ends the program sequence?
+    processRoundResult: function() {
+        let winner = this.roundWinner;
+        winner === 'player' ? this.playerScore++ : this.computerScore++;
+        this.roundNumber++
+        console.log('Player Score: ', this.playerScore, '  Computer Score: ', this.computerScore, '  Round: ', this.roundNumber)
     }
 }
 
@@ -101,11 +123,6 @@ game.conLogInstructions();
 
 
 
-//  4. If there's a winner, update the score and update the round
-    // 'Winner' function is ran with the returned string argument
-    // Update the score for the winner. Update the round number. All these values are global in scope?
-//  --> If there's a draw, alert the player and return to step 1.
-    // If Step 3. function returns draw, run 'draw' function which alerts the draw, and ends the program sequence?
 
     //  5. Display updated score and round
     // Run a display function to display updated score and round
