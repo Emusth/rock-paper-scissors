@@ -23,11 +23,13 @@ const game = {
     gameInstructions: `Rock, Paper, Scissors. To start game, type game.run()`,
     playerMove: '',
     computerMove: '',
-    roundWinner: '',
-    redoRound: true,
     playerScore: 0,
     computerScore: 0,
+    roundWinner: '',
     roundNumber: 0,
+    newRound: true,
+    redoRound: true,
+    matchComplete: false,
 
     //  0. console.log the user instructions to start playing
     conLogInstructions: function() {
@@ -36,16 +38,28 @@ const game = {
 
     // 0.75 Controller method that executes all necessary functions;
     run: function() {
+        while(this.newRound) {
         // Play a round of the game. If there's a draw, redo the round;
         while (this.redoRound) {
         this.checkPlayerInput();
         this.computerInput();
         this.compareMoves();
         }
-   
-        // If there's a winner, process outcome
-        this.processRoundResult();
-        this.displayResults();
+         // If there's a winner, process outcome
+         this.processRoundResult();
+         this.checkRoundCount();
+         if(this.matchComplete) {
+            this.displayMatchResults();
+            this.resetMatch();
+            return;
+        } else {
+        this.displayRoundResults();
+        this.resetRound();
+        }
+    }
+       
+       
+
     },
 
 
@@ -92,6 +106,7 @@ const game = {
         let cMove = this.computerMove;
         // Draw
         if (pMove === cMove) {
+            alert('A DRAW! Redo round.')
             this.redoRound = true;
         }
         // Player wins 
@@ -104,7 +119,6 @@ const game = {
             this.roundWinner = 'computer';
             this.redoRound = false;
         }
-        console.log('compareMoves() roundWinner: ', this.roundWinner);
     },
 
     //  4. If there's a winner, update the score and update the round
@@ -118,21 +132,51 @@ const game = {
         this.roundNumber++
     },
 
+    //  6. Check if the final round was played
+    // Run a check if the final round of played
+checkRoundCount: function() {
+    if(this.roundNumber === 5) {
+        this.matchComplete = true;
+        this.newRound = false;
+    }
+},
+
 
     //  5. Display updated score and round
     // Run a display function to display updated score and round
 
-    displayResults: function() {
-        if(this.roundNumber < 5) {
-            // Display scores and round number
-            alert(`Player Score: ${this.playerScore}, Computer Score: ${this.computerScore}, Round: ${this.roundNumber}`);
-        } else {
-            // Determine who has higher score
-            // Display match winner and their score
-            let matchWinner = this.playerScore > this.ComputerScore ? 'Player' : 'computer';
-            let winningScore = this.playerScore > this.ComputerScore ? this.playerScore : this.computerScore;
-            alert(`Match complete, the winner is ${matchWinner} with a score of ${winningScore}`);
-        }
+    displayRoundResults: function() {
+        // Display scores and round number
+        alert(`Round winner: ${(this.roundWinner).charAt(0).toUpperCase() + this.roundWinner.slice(1)}\nPlayer Score: ${this.playerScore}\nComputer Score: ${this.computerScore}\nRound: ${this.roundNumber}`);
+     
+    },
+
+    resetRound: function() {
+        this.redoRound = true;
+    },
+
+    displayMatchResults: function() {
+        let matchWinner = this.playerScore > this.computerScore ? 'Player' : 'Computer';
+        let matchLoser = this.playerScore < this.computerScore ? 'Player' : 'Computer';
+        let winningScore = this.playerScore > this.computerScore ? this.playerScore : this.computerScore;
+        let losingScore = this.playerScore < this.computerScore ? this.playerScore : this.computerScore;
+        alert(`Round 5 complete, the winner is ${matchWinner} with a score of ${winningScore}.\nThe loser is ${matchLoser} with a score of ${losingScore}.`);
+    },
+
+    resetMatch: function() {
+        this.playerMove = '';
+        this.computerMove = '';
+        this.playerScore = 0;
+        this.computerScore = 0;
+        this.roundWinner = '';
+        this.roundNumber = 0;
+        this.newRound = true;
+        this.redoRound = true;
+        this.matchComplete = false;
+    },
+
+    askPlayAgain: function() {
+        
     }
 }
 
@@ -144,8 +188,6 @@ game.conLogInstructions();
 
 
 
-//  6. Check if the final round was played
-    // Run a check if the final round of played
 
 //  7. If not final round, return to step 1.
     // If not final round, end
