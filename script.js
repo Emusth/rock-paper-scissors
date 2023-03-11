@@ -24,7 +24,7 @@ const game = {
     playerMove: '',
     computerMove: '',
     roundWinner: '',
-    matchWinner: '',
+    redoRound: true,
     playerScore: 0,
     computerScore: 0,
     roundNumber: 0,
@@ -36,19 +36,16 @@ const game = {
 
     // 0.75 Controller method that executes all necessary functions;
     run: function() {
-        // Play a round of the game
+        // Play a round of the game. If there's a draw, redo the round;
+        while (this.redoRound) {
         this.checkPlayerInput();
         this.computerInput();
         this.compareMoves();
-
-        // If there's a tie, re-do the round;
-        if(!this.roundWinner) {
-            this.checkPlayerInput();
-            this.computerInput();
-            this.compareMoves();
         }
+   
         // If there's a winner, process outcome
         this.processRoundResult();
+        this.displayResults();
     },
 
 
@@ -59,7 +56,10 @@ const game = {
     // Run function that checks to see if it's an acceptable input
     // If not acceptable, alert user to enter a valid input.
     checkPlayerInput: function() {
-        let pInput = prompt(`Please pass one of the following letters into the prompt to select a move: 'r' | 'p' | 's'`)
+        let pInput = prompt(`Please pass one of the following letters into the prompt to select a move: 'r' | 'p' | 's'`);
+        if(pInput === null) {
+            'Input null, please restart the game so sorry';
+        }
         let pInputLower = pInput.toLowerCase();
         if(pInputLower === 'r' || pInputLower === 'p' || pInputLower === 's') {
             this.playerMove = pInputLower;
@@ -74,10 +74,11 @@ const game = {
     // Next function is ran, randomly selecting a move for the computer
     // This move is stored in variable for Computer 
     computerInput: function() {
-        let randomMoveNum = Math.floor(Math.random() * 3) + 1;
-        randomMoveNum === 1 ? this.computerMove = 'r' :
-        randomMoveNum === 2 ? this.computerMove = 'p' :
-        randomMoveNum === 3 ? this.computerMove = 's' : console.log(`error. this shouldn't happen.`);
+        this.computerMove = 'r';
+        // let randomMoveNum = Math.floor(Math.random() * 3) + 1;
+        // randomMoveNum === 1 ? this.computerMove = 'r' :
+        // randomMoveNum === 2 ? this.computerMove = 'p' :
+        // randomMoveNum === 3 ? this.computerMove = 's' : console.log(`error. this shouldn't happen.`);
         console.log('Computer move: ', this.computerMove);
     },
 
@@ -91,15 +92,17 @@ const game = {
         let cMove = this.computerMove;
         // Draw
         if (pMove === cMove) {
-            this.roundWinner = false;
+            this.redoRound = true;
         }
         // Player wins 
         else if (pMove === 'r' && cMove === 's' || pMove === 'p' && cMove === 'r' || pMove === 's' && cMove === 'p') {
             this.roundWinner = 'player';
+            this.redoRound = false;
         } 
         // Computer wins
         else {
             this.roundWinner = 'computer';
+            this.redoRound = false;
         }
         console.log('compareMoves() roundWinner: ', this.roundWinner);
     },
@@ -113,7 +116,23 @@ const game = {
         let winner = this.roundWinner;
         winner === 'player' ? this.playerScore++ : this.computerScore++;
         this.roundNumber++
-        console.log('Player Score: ', this.playerScore, '  Computer Score: ', this.computerScore, '  Round: ', this.roundNumber)
+    },
+
+
+    //  5. Display updated score and round
+    // Run a display function to display updated score and round
+
+    displayResults: function() {
+        if(this.roundNumber < 5) {
+            // Display scores and round number
+            alert(`Player Score: ${this.playerScore}, Computer Score: ${this.computerScore}, Round: ${this.roundNumber}`);
+        } else {
+            // Determine who has higher score
+            // Display match winner and their score
+            let matchWinner = this.playerScore > this.ComputerScore ? 'Player' : 'computer';
+            let winningScore = this.playerScore > this.ComputerScore ? this.playerScore : this.computerScore;
+            alert(`Match complete, the winner is ${matchWinner} with a score of ${winningScore}`);
+        }
     }
 }
 
@@ -124,8 +143,6 @@ game.conLogInstructions();
 
 
 
-    //  5. Display updated score and round
-    // Run a display function to display updated score and round
 
 //  6. Check if the final round was played
     // Run a check if the final round of played
