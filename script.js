@@ -20,7 +20,7 @@
 
 //  0.5 Create object to hold all functions
 const game = {
-    gameInstructions: `Rock, Paper, Scissors. To start game, type game.run()`,
+    gameInstructions: `To play a game of Rock, Paper, Scissors, enter: game.run()`,
     playerMove: '',
     computerMove: '',
     playerScore: 0,
@@ -48,12 +48,13 @@ const game = {
          // If there's a winner, process outcome
          this.processRoundResult();
          this.checkRoundCount();
+         this.displayRoundResults();
          if(this.matchComplete) {
             this.displayMatchResults();
             this.resetMatch();
+            this.conLogInstructions();
             return;
         } else {
-        this.displayRoundResults();
         this.resetRound();
         }
     }
@@ -77,7 +78,7 @@ const game = {
         let pInputLower = pInput.toLowerCase();
         if(pInputLower === 'r' || pInputLower === 'p' || pInputLower === 's') {
             this.playerMove = pInputLower;
-            console.log('Player Move: ', this.playerMove);
+           
         } else {
             alert(`Input not valid. Please pass one of the following letters into the prompt to select a move: 'r' | 'p' | 's' (rock | paper | scissors)`);
             this.checkPlayerInput();
@@ -88,12 +89,10 @@ const game = {
     // Next function is ran, randomly selecting a move for the computer
     // This move is stored in variable for Computer 
     computerInput: function() {
-        this.computerMove = 'r';
-        // let randomMoveNum = Math.floor(Math.random() * 3) + 1;
-        // randomMoveNum === 1 ? this.computerMove = 'r' :
-        // randomMoveNum === 2 ? this.computerMove = 'p' :
-        // randomMoveNum === 3 ? this.computerMove = 's' : console.log(`error. this shouldn't happen.`);
-        console.log('Computer move: ', this.computerMove);
+        let randomMoveNum = Math.floor(Math.random() * 3) + 1;
+        randomMoveNum === 1 ? this.computerMove = 'r' :
+        randomMoveNum === 2 ? this.computerMove = 'p' :
+        randomMoveNum === 3 ? this.computerMove = 's' : console.log(`error. this shouldn't happen.`);
     },
 
 
@@ -147,8 +146,8 @@ checkRoundCount: function() {
 
     displayRoundResults: function() {
         // Display scores and round number
+        console.log(`ROUND ${this.roundNumber} \nPlayer move: ${this.playerMove} | Player score: ${this.playerScore} | Computer move: ${this.computerMove} | Computer score: ${this.computerScore}`);
         alert(`Round winner: ${(this.roundWinner).charAt(0).toUpperCase() + this.roundWinner.slice(1)}\nPlayer Score: ${this.playerScore}\nComputer Score: ${this.computerScore}\nRound: ${this.roundNumber}`);
-     
     },
 
     resetRound: function() {
@@ -160,6 +159,7 @@ checkRoundCount: function() {
         let matchLoser = this.playerScore < this.computerScore ? 'Player' : 'Computer';
         let winningScore = this.playerScore > this.computerScore ? this.playerScore : this.computerScore;
         let losingScore = this.playerScore < this.computerScore ? this.playerScore : this.computerScore;
+        console.log(`Round 5 complete, the winner is ${matchWinner} with a score of ${winningScore}.\nThe loser is ${matchLoser} with a score of ${losingScore}.`);
         alert(`Round 5 complete, the winner is ${matchWinner} with a score of ${winningScore}.\nThe loser is ${matchLoser} with a score of ${losingScore}.`);
     },
 
@@ -174,10 +174,6 @@ checkRoundCount: function() {
         this.redoRound = true;
         this.matchComplete = false;
     },
-
-    askPlayAgain: function() {
-        
-    }
 }
 
 //  -1. Display instructions
