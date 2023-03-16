@@ -192,21 +192,54 @@ function getComputerChoice() {
 }
 
 function playRound(playerInput, computerInput) {
-    let pInput = playerInput.charAt(0).toUpperCase() + playerInput.toLowerCase().slice(1);
+    let h1 = document.querySelector('h1');
+    let pInput = playerInput;
     let cInput = computerInput;
+    let pScoreSpan = document.querySelector('.spanPlayerScore');
+    let cScoreSpan = document.querySelector('.spanComputerScore');
+    let announceRound = document.querySelector('.announceRound');
+    let pScore = parseInt(pScoreSpan.textContent);
+    let cScore = parseInt(cScoreSpan.textContent);
     if(pInput === cInput) {
-        console.log(`Draw ${pInput} ties ${cInput}`);
-        return `Draw ${pInput} ties ${cInput}`;
+        announceRound.textContent = `IT'S A DRAW: ${pInput} draws ${cInput}`;
+        return;
     } else if (pInput === 'Rock' && cInput === 'Scissors' || pInput === 'Paper' && cInput === 'Rock' || pInput === 'Scissors' && cInput === 'Paper' ) {
-        return `You win! ${pInput} beats ${cInput}`;
+        ++pScore;
+        pScoreSpan.textContent = pScore;
+        announceRound.textContent = `You win! ${pInput} beats ${cInput}`;
+        if (pScore === 5) { 
+            document.body.style.backgroundColor = 'black';
+            document.querySelectorAll('.moveBtn').forEach(btn => btn.style.display = 'none');
+            h1.textContent = `YOU GOT 5 AND WIN THE MATCH`;            
+            h1.style.color = 'blue'; 
+        }
     } else {
-        return `You lose! ${pInput} loses to ${cInput}`;
+        ++cScore;
+        cScoreSpan.textContent = cScore;
+        announceRound.textContent = `You LOSE! ${cInput} beats ${pInput}. GOOD DAY!`;
+        if (cScore === 5) { 
+            document.body.style.backgroundColor = 'black';
+            document.querySelectorAll('.moveBtn').forEach(btn => btn.style.display = 'none');
+            h1.textContent = `YOU LOSE COMPUTER GOT 5 AND WINS THE MATCH`;
+            h1.style.color = 'red'; 
+        }
     }
 }
 
-function game() {
-    for(let i = 0; i < 5; i++) {
-        let playerMove = prompt(`Enter one of the follow: Rock | Paper | Scissors`);
-        console.log(`Round ${i + 1}: `, playRound(playerMove, getComputerChoice()));
-    }
+function clickedInput(e) {
+    const playerMove = e.target.dataset.move;
+    playRound(playerMove, getComputerChoice());
 }
+
+function addEventListeners() {
+    const inputBtns = document.querySelectorAll('.moveBtn');
+    inputBtns.forEach(btn => btn.addEventListener('click', clickedInput));
+}
+
+function game() {
+        addEventListeners();
+        // let playerMove = prompt(`Enter one of the follow: Rock | Paper | Scissors`);
+        // console.log(playRound(playerMove, getComputerChoice()));
+}
+
+game();
